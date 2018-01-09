@@ -8,6 +8,7 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.Rollback;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -27,9 +28,16 @@ public class UserServiceImplTest extends BootStrapTest {
 
         User user = new User();
         user.setId(UUID.randomUUID().toString());
-        user.setUsername("SlumDuck");
+        user.setUsername("SlumDuck_");
         user.setPassword("@zl334459");
         userMapper.insert(user);
 
+    }
+
+    @Test
+    public void testUserCache(){
+        List<User> userList0 = userMapper.findAll();
+        System.out.println(userList0);
+        List<User> userList1 = userMapper.findAll();
     }
 }

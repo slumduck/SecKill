@@ -22,6 +22,9 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * redis 缓存
+ */
 @Configuration
 @EnableCaching
 @AutoConfigureAfter({StringRedisTemplate.class,RedisTemplate.class})
@@ -51,49 +54,47 @@ public class RedisConfig extends CachingConfigurerSupport {
         };
     }
     */
-    //缓存管理器
+
+    /**
+     *         cacheManager.setUsePrefix(true);
+     *         RedisCachePrefix cachePrefix = new RedisPrefix("prefix");
+     *         cacheManager.setCachePrefix(cachePrefix);
+     *         整体缓存过期时间
+     *         cacheManager.setDefaultExpiration(3600L);
+     *         设置缓存过期时间。key和缓存过期时间，单位秒
+     *         Map<String, Long> expiresMap = new HashMap<>();
+     *         expiresMap.put("user", 1000L);
+     *         cacheManager.setExpires(expiresMap)
+     * @return
+     */
     @Bean
-    public CacheManager cacheManager(RedisTemplate redisTemplate) {
-        RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
+    @Override
+    public CacheManager cacheManager() {
+        RedisCacheManager cacheManager = new RedisCacheManager(stringRedisTemplate);
         //设置缓存过期时间
         cacheManager.setDefaultExpiration(10000);
-        /*
-        cacheManager.setUsePrefix(true);
-        RedisCachePrefix cachePrefix = new RedisPrefix("prefix");
-        cacheManager.setCachePrefix(cachePrefix);
-        // 整体缓存过期时间
-        cacheManager.setDefaultExpiration(3600L);
-        // 设置缓存过期时间。key和缓存过期时间，单位秒
-        Map<String, Long> expiresMap = new HashMap<>();
-        expiresMap.put("user", 1000L);
-        cacheManager.setExpires(expiresMap)
-        */
         return cacheManager;
     }
 
-    /*
-    @Bean
-    public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory factory){
-        StringRedisTemplate template = new StringRedisTemplate(factory);
-        setSerializer(template);//设置序列化工具
-        template.afterPropertiesSet();
-        return template;
-    }
-    */
-
-    private void setSerializer(StringRedisTemplate template){
+    private void setSerializer(RedisTemplate template){
         @SuppressWarnings({ "rawtypes", "unchecked" })
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
         ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(om);
+        //value序列化方式
         template.setValueSerializer(jackson2JsonRedisSerializer);
+        //key序列化方式
+        template.setKeySerializer(jackson2JsonRedisSerializer);
     }
 
     @PostConstruct
     private void init(){
-        setSerializer(stringRedisTemplate);//设置序列化工具
+        //设置序列化工具
+        setSerializer(stringRedisTemplate);
+        setSerializer(redisTemplate);
         stringRedisTemplate.afterPropertiesSet();
+        redisTemplate.afterPropertiesSet();
     }
 }

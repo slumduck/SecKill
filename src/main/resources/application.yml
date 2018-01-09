@@ -23,12 +23,15 @@ spring:
     redis:
       cluster:
         nodes:
-          - redis1.itclj.com:7000
-          - redis1.itclj.com:7001
-          - redis2.itclj.com:7002
-          - redis2.itclj.com:7003
-          - redis3.itclj.com:7004
-          - redis3.itclj.com:7005
+          - 192.168.221.128:7000
+          - 192.168.221.128:7001
+          - 192.168.221.128:7002
+          - 192.168.221.129:7003
+          - 192.168.221.129:7004
+          - 192.168.221.129:7005
+          - 192.168.221.130:7006
+          - 192.168.221.130:7007
+          - 192.168.221.130:7008
         max-redirects: 5
       timeout: 3000
       pool:
@@ -36,7 +39,6 @@ spring:
         max-idle: 8
         min-idle: 0
         max-wait: -1
-
 
 
 mybatis:

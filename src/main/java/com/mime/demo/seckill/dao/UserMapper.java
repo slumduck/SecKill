@@ -2,11 +2,14 @@ package com.mime.demo.seckill.dao;
 
 import com.mime.demo.seckill.entity.User;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 
 @Repository
@@ -24,6 +27,10 @@ public interface UserMapper {
     //@Select("select * from user where id =#{id}")
     @Cacheable(key ="#p0")
     User findById(@Param("id") String id);
+
+    @Select("select * from tb_user")
+    @Cacheable(key ="#root.methodName")
+    List<User> findAll();
 
     @CachePut(key = "#p0")
     //@Update("update user set name=#{name} where id=#{id}")
