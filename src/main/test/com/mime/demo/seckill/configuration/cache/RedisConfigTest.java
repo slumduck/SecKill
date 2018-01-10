@@ -34,13 +34,14 @@ public class RedisConfigTest extends BootStrapTest{
 
     @Test
     public void setStringRedisTemplateTest(){
-        stringRedisTemplate.opsForValue().setIfAbsent("stringRedisTemplate","stringRedisTemplate");
+        //stringRedisTemplate.opsForValue().setIfAbsent("stringRedisTemplate","stringRedisTemplate");
+        stringRedisTemplate.opsForValue().set("stringRedisTemplate","string_slumduck");
     }
 
     @Test
     public void getStringRedisTemplateTest(){
-        String key = stringRedisTemplate.opsForValue().get("stringRedisTemplate");
-        System.out.println("redisTemplate = " + key);
+        String value = stringRedisTemplate.opsForValue().get("stringRedisTemplate");
+        System.out.println("redisTemplate = " + value);
     }
 
 }

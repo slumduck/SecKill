@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -68,5 +70,11 @@ public class RedisController {
     @RequestMapping("test")
     public String test(){
         return "hello world";
+    }
+
+    @RequestMapping("session")
+    public String testRedisHttpSession(HttpServletRequest request){
+        HttpSession httpSession = request.getSession();
+        return httpSession.getId();
     }
 }

@@ -22,7 +22,7 @@ public class UserServiceImplTest extends BootStrapTest {
     private UserMapper userMapper;
 
     //@Rollback
-    //@Commit
+    @Commit
     @Test
     public void insertUser(){
 

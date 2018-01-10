@@ -7,20 +7,15 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.cache.RedisCachePrefix;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * redis 缓存
@@ -76,7 +71,7 @@ public class RedisConfig extends CachingConfigurerSupport {
         return cacheManager;
     }
 
-    private void setSerializer(RedisTemplate template){
+    private void setSerializer(RedisTemplate template,boolean isKeySerializer){
         @SuppressWarnings({ "rawtypes", "unchecked" })
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
         ObjectMapper om = new ObjectMapper();
@@ -86,14 +81,14 @@ public class RedisConfig extends CachingConfigurerSupport {
         //value序列化方式
         template.setValueSerializer(jackson2JsonRedisSerializer);
         //key序列化方式
-        template.setKeySerializer(jackson2JsonRedisSerializer);
+        if (isKeySerializer){template.setKeySerializer(jackson2JsonRedisSerializer);}
     }
 
     @PostConstruct
     private void init(){
         //设置序列化工具
-        setSerializer(stringRedisTemplate);
-        setSerializer(redisTemplate);
+        setSerializer(stringRedisTemplate,false);
+        setSerializer(redisTemplate,true);
         stringRedisTemplate.afterPropertiesSet();
         redisTemplate.afterPropertiesSet();
     }
